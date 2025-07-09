@@ -6,5 +6,6 @@ app_name = "core"
 
 urlpatterns = [
      path("ecommerce/", views.index)
+     
 ]
 
