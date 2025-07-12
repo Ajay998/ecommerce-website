@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'userauths'
     
 ]
 
@@ -133,6 +134,8 @@ JAZZMIN_SETTINGS = {
     'site_logo': "assets/imgs/theme/loading.gif",
     'copyright': "ecommerce-shop.com",
 }
+
+AUTH_USER_MODEL = 'userauths.User'
 
 
 JAZZMIN_UI_TWEAKS = {
