@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from userauths.forms import UserRegisterForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
+from userauths.models import User
 # Create your views here.
 
 def register_view(request):
@@ -27,3 +28,30 @@ def register_view(request):
         'form': form,
     }
     return render(request, "userauths/sign-up.html", context)
+
+def login_view(request):
+    # print("hello")
+    if request.user.is_authenticated:
+        messages.warning(request, f"Hey you are already Logged In.")
+        return redirect("core:index")
+    
+    if request.method == "POST":
+        email = request.POST.get("email") # peanuts@gmail.com
+        password = request.POST.get("password") # getmepeanuts
+
+        try:
+            user = User.objects.get(email=email)
+            user = authenticate(request, email=email, password=password)
+
+            if user is not None:
+                login(request, user)
+                messages.success(request, "You are logged in.")
+                next_url = request.GET.get("next", 'core:index')
+                return redirect(next_url)
+            else:
+                messages.warning(request, "User Does Not Exist, create an account.")
+    
+        except:
+            messages.warning(request, f"User with {email} does not exist")
+        
+    return render(request, "userauths/sign-in.html")
