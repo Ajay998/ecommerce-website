@@ -1,14 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from userauths.forms import UserRegisterForm
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
 # Create your views here.
 
 def register_view(request):
+    
     if request.method == "POST":
-        print("User Registerd Successfully")
+        form = UserRegisterForm(request.POST or None)
+        if form.is_valid():
+            new_user = form.save()
+            username = form.cleaned_data.get("username")
+            messages.success(request, f"Hey {username}, You account was created successfully.")
+            new_user = authenticate(username=form.cleaned_data['email'],
+                                    password=form.cleaned_data['password1']
+            )
+            login(request, new_user)
+
+            next_url = request.GET.get("next", 'core:index')
+            return redirect(next_url)
     else:
-        print("User Cannot Resiter")
+        form = UserRegisterForm()
 
 
-    form = UserRegisterForm()
-    context = {'form':form}
-    return render(request,"userauths/signup.html",context)
+    context = {
+        'form': form,
+    }
+    return render(request, "userauths/sign-up.html", context)
