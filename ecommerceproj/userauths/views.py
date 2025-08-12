@@ -55,3 +55,9 @@ def login_view(request):
             messages.warning(request, f"User with {email} does not exist")
         
     return render(request, "userauths/sign-in.html")
+
+def logout_view(request):
+
+    logout(request)
+    messages.success(request, "You logged out.")
+    return redirect("userauths:sign-in")
